@@ -6,22 +6,27 @@
 
 // TivaWare include
 #include "driverlib/debug.h"
-#include "driverlib/inc/hw_nvic.h"
-#include "driverlib/inc/hw_types.h"
+#include "inc/hw_nvic.h"
+#include "inc/hw_types.h"
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
-
 #include "drivers/pinout.h"
 #include "utils/uartstdio.h"
 
-// FreeRTOS includes
-#include "FreeRTOS/FreeRTOS.h"
-#include "FreeRTOS/FreeRTOSConfig.h"
-#include "FreeRTOS/queue.h"
-#include "FreeRTOS/semphr.h"
-#include "FreeRTOS/task.h"
+// Tiva LwipLib
+#include "lwiplib/lwiplib.h" 
 
+// FreeRTOS includes
+#include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
+#include "queue.h"
+#include "semphr.h"
+#include "task.h"
+
+#include "lwip_task.h"
+
+extern void echoServer(void* *pvParameters);
 
 //*****************************************************************************
 //
@@ -93,10 +98,10 @@ int main(void) {
     SysCtlMOSCConfigSet(SYSCTL_MOSC_HIGHFREQ);
 
 
-    /* if (lwIPTaskInit() != 0) { */
-    /*     while (1) { */
-    /*     } */
-    /* } */
+    if (lwIPTaskInit() != 0) {
+        while (1) {
+        }
+    }
 
     // Create demo tasks
     xTaskCreate(blink, "Blink", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
@@ -104,8 +109,8 @@ int main(void) {
     xTaskCreate(helloWorld, "Hello", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
 
-    /* xTaskCreate(echoServer, (const portCHAR *) "Echo", */
-    /* 		configMINIMAL_STACK_SIZE, NULL, 1, NULL); */
+    xTaskCreate(echoServer, (const portCHAR *) "Echo",
+    		configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
     vTaskStartScheduler();
     return 0;

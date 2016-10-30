@@ -5,10 +5,10 @@ SET(BINARY_NAME "TivaTest")
 # Resolve Dependencies
 #------------------------------
 
-find_package(TivaWare COMPONENTS driverlib drivers utils
+find_package(TivaWare COMPONENTS TivaHeaders driverlib drivers utils
   CONFIG REQUIRED)
 find_package(FreeRTOS CONFIG REQUIRED)
-
+find_package(lwip COMPONENTS lwip CONFIG REQUIRED)
 
 SET(MODULE_DEPS "")
 
@@ -19,6 +19,8 @@ SET(MODULE_DEPS "")
 set(SRCS
   main.c
   tm4c129encpdt_startup_gcc.c
+  lwip_task.c
+  echoserver_task.c
   )
 
 #------------------------------
@@ -28,10 +30,13 @@ add_executable(${BINARY_NAME}  ${SRCS} )
 
 # Link the binary
 target_link_libraries( ${BINARY_NAME}
-#  TivaWare::driverlib
+  TivaWare::TivaHeaders
+  TivaWare::driverlib
   TivaWare::drivers
   TivaWare::utils
+  lwip::lwip
   freertos
+
   )
 
 set_target_properties(${BINARY_NAME}

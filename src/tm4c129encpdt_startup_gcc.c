@@ -60,6 +60,8 @@ static uint32_t pui32Stack[128];
 extern void xPortPendSVHandler(void);
 extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
+void lwIPEthernetIntHandler(void) __attribute__((weak));
+
 void lwIPEthernetIntHandler(void){};
 
 //*****************************************************************************
